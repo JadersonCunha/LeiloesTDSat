@@ -11,7 +11,7 @@ public class ProdutosDAO {
     PreparedStatement prep;
     ResultSet resultset;
 
-    public void cadastrarProduto(ProdutosDTO produto) {
+    public boolean cadastrarProduto(ProdutosDTO produto) {
         String sql = "INSERT INTO produtos (nome, valor, status) VALUES (?, ?, ?)";
 
         conn = new conectaDAO().connectDB();
@@ -19,14 +19,17 @@ public class ProdutosDAO {
         try {
             prep = conn.prepareStatement(sql);
             prep.setString(1, produto.getNome());
-            prep.setInt(2, produto.getValor());
+            prep.setDouble(2, produto.getValor()); 
             prep.setString(3, produto.getStatus());
-            prep.execute();
+
+            int rowsAffected = prep.executeUpdate();
 
             JOptionPane.showMessageDialog(null, "Produto cadastrado com sucesso!");
+            return rowsAffected > 0;
 
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao cadastrar produto: " + e.getMessage());
+            return false;
         } finally {
             try {
                 if (prep != null) prep.close();
@@ -51,7 +54,7 @@ public class ProdutosDAO {
                 ProdutosDTO produto = new ProdutosDTO();
                 produto.setId(resultset.getInt("id"));
                 produto.setNome(resultset.getString("nome"));
-                produto.setValor(resultset.getInt("valor"));
+                produto.setValor(resultset.getDouble("valor")); 
                 produto.setStatus(resultset.getString("status"));
                 listagem.add(produto);
             }

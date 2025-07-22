@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
+import javax.swing.JOptionPane;
 /**
  *
  * @author Adm
@@ -142,14 +142,29 @@ public class cadastroVIEW extends javax.swing.JFrame {
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
         ProdutosDTO produto = new ProdutosDTO();
         String nome = cadastroNome.getText();
-        String valor = cadastroValor.getText();
         String status = "A Venda";
+        String valorTextCampo = cadastroValor.getText();
+        
+        try{
+            Double valor = Double.parseDouble(valorTextCampo);
+        
         produto.setNome(nome);
-        produto.setValor(Integer.parseInt(valor));
+        produto.setValor(valor);
         produto.setStatus(status);
         
+        
+        
         ProdutosDAO produtodao = new ProdutosDAO();
-        produtodao.cadastrarProduto(produto);
+        boolean cadastradoComSucesso = produtodao.cadastrarProduto(produto);
+        
+        if (cadastradoComSucesso){
+            cadastroNome.setText("");
+            cadastroValor.setText("");
+        }
+        
+        }catch (NumberFormatException e){
+            JOptionPane.showMessageDialog(null, "Valor inválido! Por favor, insira um número válido para o valor (ex: 10.50).");
+        }
         
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
